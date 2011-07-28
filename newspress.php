@@ -28,7 +28,7 @@ Author URI: http://www.newstex.com
 function newspress_send_story($post_ID) {
 	//Get the post and package it up to be sent
 	$json_data = create_json_blob($post_ID);
-	$url = "http://content.newstex.us:80/nbsubmit";
+	$url = "http://content.newstex.us:80/nbsubmit/$post_ID";
 
 	//Generate the PUT request
 	$ch = curl_init($url);
