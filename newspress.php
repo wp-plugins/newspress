@@ -44,7 +44,6 @@ function newspress_send_story($post_ID) {
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 	$curl_response = curl_exec($ch);
-	echo $curl_response;
 
 	return $response;
 }
