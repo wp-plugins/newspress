@@ -76,7 +76,8 @@ function create_json_blob($post_ID) {
 		'post_content' => $content,
 		'post_excerpt' => $excerpt,
 		'post_source' => $source,
-		'post_byline' => $byline
+		'post_byline' => $byline,
+		'post_id' => $post_ID
 		);
 	$json_data = json_encode($pre_json);
 	//Might need extra encoding
