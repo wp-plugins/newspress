@@ -44,11 +44,18 @@ Typically it takes a few minutes for Newstex to process a post from Wordpress. I
 
 == Changelog ==
 
+= 0.6 =
+* Clarified interface
+* Now posts to content.newstex.us
+
 = 0.5 =
 * Admin page for selecting credentials
 * Sends POST requests with story content
 
 == Upgrade Notice ==
+
+= 0.6 =
+0.6 supports sending posts to Newstex to have your stories published to Newstex's audience
 
 = 0.5 =
 0.5 supports sending posts to Newstex to have your stories published to Newstex's audience

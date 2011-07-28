@@ -40,9 +40,9 @@
 <form name="newspress_form" method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>">
 	<input type="hidden" name="newspress_hidden" value="Y">
 	<?php    echo "<h4>" . __( 'Newstex Publisher Settings', 'newspress_trdom' ) . "</h4>"; ?>
-	<p><?php _e("User (Publisher ID): " ); ?><input type="text" name="newspress_user" value="<?php echo $npuser; ?>" size="20"><?php _e(" ex: NEWS" ); ?></p>
+	<p><?php _e("Username: " ); ?><input type="text" name="newspress_user" value="<?php echo $npuser; ?>" size="20"><?php _e(" ex: NEWS" ); ?></p>
 	<p><?php _e("Password: " ); ?><input type="text" name="newspress_key" value="<?php echo $nppwd; ?>" size="20"><?php _e(" ex: " ); ?></p>
-	<p><?php _e("Newstex Post URL: " ); ?><?php _e("http://ftp.dev.newstex.us:8080/nbsubmit"); ?></p>
+	<p><?php _e("Newstex Post URL: " ); ?><?php _e("http://content.newstex.us"); ?></p>
 
 	<p class="submit">
 	<input type="submit" name="Submit" value="<?php _e('Save Options', 'newspress_trdom' ) ?>" />

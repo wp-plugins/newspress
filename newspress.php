@@ -4,7 +4,7 @@ Plugin Name: Newspress, Newstex Publisher
 Plugin URI: http://www.newstex.com
 Description: Plugin for Publishing posts to Newstex
 Author: Ryan Brown
-Version: 0.5
+Version: 0.6
 Author URI: http://www.newstex.com
 */
 
@@ -28,7 +28,7 @@ Author URI: http://www.newstex.com
 function newspress_send_story($post_ID) {
 	//Get the post and package it up to be sent
 	$json_data = create_json_blob($post_ID);
-	$url = "http://ftp.dev.newstex.us:8080/nbsubmit";
+	$url = "http://content.newstex.us:80/nbsubmit";
 
 	//Generate the PUT request
 	$ch = curl_init($url);
