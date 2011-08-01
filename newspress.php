@@ -4,7 +4,7 @@ Plugin Name: Newspress, Newstex Publisher
 Plugin URI: http://www.newstex.com
 Description: Plugin for Publishing posts to Newstex
 Author: Newstex, LLC
-Version: 0.6
+Version: 0.7
 Author URI: http://www.newstex.com
 */
 
@@ -52,6 +52,14 @@ function create_json_blob($post_ID) {
 	//put all the data into an array in order to JSON-ify it
 	$post = get_post($post_ID);
 	//pull out all the data we need
+	//Create a list of categories
+	//get the categories
+	$category_arr = get_the_category($post_ID);
+	$name_arr = array();
+	foreach($category_arr as $cat) {
+		//loop through them and get only their name
+		$name_arr[] = $cat->name;
+	}
 	//permalink
 	$permalink = get_permalink($post_ID);
 	//headline (Title of the post)
@@ -76,7 +84,8 @@ function create_json_blob($post_ID) {
 		'post_excerpt' => $excerpt,
 		'post_source' => $source,
 		'post_byline' => $byline,
-		'post_id' => $post_ID
+		'post_id' => $post_ID,
+		'post_categories' => $name_arr
 		);
 	$json_data = json_encode($pre_json);
 	//Might need extra encoding

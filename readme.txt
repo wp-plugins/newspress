@@ -43,6 +43,9 @@ Typically it takes a few minutes for Newstex to process a post from Wordpress. I
 
 
 == Changelog ==
+= 0.7 =
+* Categories are now read and sent to Newstex
+* Bug fixes
 
 = 0.6 =
 * Clarified interface
