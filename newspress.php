@@ -60,6 +60,12 @@ function create_json_blob($post_ID) {
 		//loop through them and get only their name
 		$name_arr[] = $cat->name;
 	}
+	//get the tags
+	$raw_tag_array = wp_get_post_tags($post_ID);
+	foreach($raw_tag_array as $tag) {
+		//loop through them and get only their name
+		$name_arr[] = $tag->name;
+	}
 	//permalink
 	$permalink = get_permalink($post_ID);
 	//headline (Title of the post)
