@@ -43,6 +43,9 @@ Typically it takes a few minutes for Newstex to process a post from Wordpress. I
 
 
 == Changelog ==
+= 0.7.1 =
+* Now sends story language
+
 = 0.7 =
 * Categories are now read and sent to Newstex
 * Bug fixes
@@ -56,6 +59,8 @@ Typically it takes a few minutes for Newstex to process a post from Wordpress. I
 * Sends POST requests with story content
 
 == Upgrade Notice ==
+= 0.7.1 =
+0.7.1 supports tags and categories and sends the post's language
 
 = 0.6 =
 0.6 supports sending posts to Newstex to have your stories published to Newstex's audience

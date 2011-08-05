@@ -4,7 +4,7 @@ Plugin Name: Newspress, Newstex Publisher
 Plugin URI: http://www.newstex.com
 Description: Plugin for Publishing posts to Newstex
 Author: Newstex, LLC
-Version: 0.7
+Version: 0.7.1
 Author URI: http://www.newstex.com
 */
 
@@ -66,6 +66,8 @@ function create_json_blob($post_ID) {
 		//loop through them and get only their name
 		$name_arr[] = $tag->name;
 	}
+	//language
+	$lang = get_bloginfo('language');
 	//permalink
 	$permalink = get_permalink($post_ID);
 	//headline (Title of the post)
@@ -91,7 +93,8 @@ function create_json_blob($post_ID) {
 		'post_source' => $source,
 		'post_byline' => $byline,
 		'post_id' => $post_ID,
-		'post_categories' => $name_arr
+		'post_categories' => $name_arr,
+		'post_language' => $lang
 		);
 	$json_data = json_encode($pre_json);
 	//Might need extra encoding
