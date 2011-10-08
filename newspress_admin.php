@@ -23,7 +23,42 @@
 		$nppwd = $_POST['newspress_key'];
 		update_option('newspress_key', $nppwd);
 		?>
-		<div class="updated"><p><?php _e('Options saved.' ); ?></p></div>
+		<div class="updated">
+		<p><?php 
+			$url = "http://content.newstex.us/nbsubmit";
+			//Do a GET request to make sure we have the right server and that our credentials are valid
+			$ch = curl_init($url);
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+			//Yes, we want the header returned
+			curl_setopt($ch, CURLOPT_HEADER, 1);
+			//Need to send authentication
+			curl_setopt($ch, CURLOPT_USERPWD, get_option('newspress_user') . ":" . get_option('newspress_key'));
+			curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+			$curl_response = curl_exec($ch);
+			$status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			$article_list = '';
+			$post_str = substr($curl_response, curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD) * -1);
+			foreach(explode(", ", $post_str) as $pid) {
+				$title = get_the_title($pid);
+				$article_list .= "<li>$title</li>";
+			}
+
+			//get the WP ID's of the files that are successfully in the bucket
+
+			if ($status_code == 200 ) {
+				//SUCCESS!
+				_e("Connection test successful, credentials validated.");
+			} elseif ($status_code == 401) {
+				//Slightly less success
+				_e("Connection was successful, but credential check failed.</p><p>Please check your username/password and try again");
+			}
+			else {
+				//Not sure what happened. Probably should let support know there's a problem.
+				_e("Something went wrong. The error code is $status_code, please try again, or contact support@newstex.com if problems persist.");
+			}
+		?></p>
+		</div>
 		<?php
 	} else {
 		//Normal page display
@@ -45,7 +80,32 @@
 	<p><?php _e("Newstex Post URL: " ); ?><?php _e("http://content.newstex.us"); ?></p>
 
 	<p class="submit">
-	<input type="submit" name="Submit" value="<?php _e('Save Options', 'newspress_trdom' ) ?>" />
+	<input type="submit" name="Submit" value="<?php _e('Save and Test Options', 'newspress_trdom' ) ?>" />
+	</p>
+	<p class="storylist">
+		<h4>Recently Submitted Stories</h4>
+		<ol>
+		<?php 
+			$url = "http://content.newstex.us/nbsubmit";
+			//Do a GET request to make sure we have the right server and that our credentials are valid
+			$ch = curl_init($url);
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+			//Yes, we want the header returned
+			curl_setopt($ch, CURLOPT_HEADER, 1);
+			//Need to send authentication
+			curl_setopt($ch, CURLOPT_USERPWD, get_option('newspress_user') . ":" . get_option('newspress_key'));
+			curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+			$curl_response = curl_exec($ch);
+			$article_list = '';
+			$post_str = substr($curl_response, curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD) * -1);
+			foreach(explode(", ", $post_str) as $pid) {
+				$title = get_the_title($pid);
+				$article_list .= "<li>$title</li>";
+			}
+			echo $article_list;
+		?>
+		</ol>
 	</p>
 </form>
 </div>

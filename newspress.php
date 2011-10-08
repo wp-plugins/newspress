@@ -4,7 +4,7 @@ Plugin Name: Newspress, Newstex Publisher
 Plugin URI: http://www.newstex.com
 Description: Plugin for Publishing posts to Newstex
 Author: Newstex, LLC
-Version: 0.7.1
+Version: 0.8.1
 Author URI: http://www.newstex.com
 */
 
@@ -28,7 +28,7 @@ Author URI: http://www.newstex.com
 function newspress_send_story($post_ID) {
 	//Get the post and package it up to be sent
 	$json_data = create_json_blob($post_ID);
-	$url = "http://content.newstex.us:80/nbsubmit/$post_ID";
+	$url = "http://content.newstex.us/nbsubmit/$post_ID";
 
 	//Generate the PUT request
 	$ch = curl_init($url);
@@ -44,8 +44,11 @@ function newspress_send_story($post_ID) {
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 	$curl_response = curl_exec($ch);
+	$status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-	return $response;
+	$_GET['message'] = $status_code;
+
+	return $curl_response;
 }
 
 function create_json_blob($post_ID) {
@@ -102,6 +105,59 @@ function create_json_blob($post_ID) {
 	return $json_data;
 }
 
+//*************** Redirect post location ********************
+
+function newspress_post_redirect_filter($location) {
+	// http://stackoverflow.com/questions/5007748/modifying-wordpress-post-status-on-publish
+	remove_filter('redirect_post_location', __FILTER__, '99');
+	return add_query_arg('newspress_status', $_GET['message'], $location);
+}
+
+
+//*************** Message Alteration function ***************
+function newspress_updated_messages( $messages ) {
+	#Adds status codes for the possibilities added by newspress (curl failed with >=500 error, a <400, or success)
+	$newspress_success = "<br/>Story successfully posted by Newspress plugin";
+	$newspress_failure_creds = "<br/>Connection was successful, but credential check failed.</p><p>Please check your username/password and try again";
+	$newspress_failure_other = "<br/>Something went wrong. Update the story to resend it, or check that your credentials are correct. </p><p>Contact support@newstex.us if problem persists";
+	$status_code = $_GET['newspress_status'];
+
+	if ($status_code < 1) {
+		//Status hasn't been set
+		$newspress_message = '';
+	}
+	if ($status_code >= 200 and $status_code < 300) {
+		//SUCCESS!
+		$newspress_message = $newspress_success;
+	} elseif ($status_code == 401) {
+		//Slightly less success
+		$newspress_message = $newspress_failure_creds;
+	}
+	else {
+		//Not sure what happened. Probably should let support know there's a problem.
+		$newspress_message = $newspress_failure_other;
+	}
+
+	$messages['post'] = array(
+	 0 => '', // Unused. Messages start at index 1.
+	 1 => sprintf( __("Post updated. <a href=\"%s\">View post</a>$newspress_message"), esc_url( get_permalink($post_ID) ) ),
+	 2 => __('Custom field updated.'),
+	 3 => __('Custom field deleted.'),
+	 4 => __('Post updated.'),
+	/* translators: %s: date and time of the revision */
+	 5 => isset($_GET['revision']) ? sprintf( __('Post restored to revision from %s'), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+	 6 => sprintf( __("Post published. <a href=\"%s\">View post</a>$newspress_message"), esc_url( get_permalink($post_ID) ) ),
+	 7 => __('Post saved.'),
+	 8 => sprintf( __('Post submitted. <a target="_blank" href="%s">Preview post</a>'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
+	 9 => sprintf( __('Post scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview post</a>'),
+		// translators: Publish box date format, see http://php.net/date
+		date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ), esc_url( get_permalink($post_ID) ) ),
+	10 => sprintf( __('Post draft updated. <a target="_blank" href="%s">Preview post</a>'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
+);
+
+return $messages;
+}
+
 //*************** Admin function ***************
 function newspress_admin() {
 	include('newspress_admin.php');
@@ -111,6 +167,8 @@ function newspress_admin_actions() {
 	add_options_page("Newspress Preferences", "Newspress", "manage_options", "Newspress_Preferences", "newspress_admin");
 }
 
+add_filter('post_updated_messages', 'newspress_updated_messages');
+add_filter('redirect_post_location', 'newspress_post_redirect_filter', '99');
 add_action('publish_post', 'newspress_send_story');
 add_action('admin_menu', 'newspress_admin_actions');
 
