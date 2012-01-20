@@ -43,8 +43,8 @@ Typically it takes a few minutes for Newstex to process a post from Wordpress. I
 
 
 == Changelog ==
-= 0.8 =
-* Scheduled posts are now read and sent to Newstex
+= 0.9.0 =
+* Scheduled posts are now also sent to Newstex when they are published
 
 = 0.7.1 =
 * Now sends story language
@@ -62,6 +62,9 @@ Typically it takes a few minutes for Newstex to process a post from Wordpress. I
 * Sends POST requests with story content
 
 == Upgrade Notice ==
+= 0.9.0 =
+* Scheduled posts are now also sent to Newstex when they are published
+
 = 0.7.1 =
 0.7.1 supports tags and categories and sends the post's language
 

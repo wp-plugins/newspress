@@ -28,7 +28,7 @@ Author URI: http://www.newstex.com
 function newspress_send_story($post_ID) {
 	//Get the post and package it up to be sent
 	$json_data = create_json_blob($post_ID);
-	$url = "http://ftp.dev.newstex.us:8080/nbsubmit/$post_ID";
+	$url = "http://content.newstex.us/nbsubmit/$post_ID";
 
 	//Generate the PUT request
 	$ch = curl_init($url);
@@ -119,8 +119,16 @@ function create_json_blob($post_ID) {
 //******************* Publish Scheduled Posts Function ******
 function filter_action_publish_scheduled( $new_status, $old_status, $post ) {
 	if( 'publish' == $new_status && 'future' == $old_status ) {
-		newspress_send_story($post);
+		newspress_send_story($post->ID);
 	}
+}
+
+//*************** Redirect post location ********************
+
+function newspress_post_redirect_filter($location) {
+	// http://stackoverflow.com/questions/5007748/modifying-wordpress-post-status-on-publish
+	remove_filter('redirect_post_location', __FILTER__, '99');
+	return add_query_arg('newspress_status', $_GET['message'], $location);
 }
 
 //*************** Message Alteration function ***************
@@ -163,6 +171,8 @@ function newspress_admin_actions() {
 	add_options_page("Newspress Preferences", "Newspress", "manage_options", "Newspress_Preferences", "newspress_admin");
 }
 
+add_filter('post_updated_messages', 'newspress_updated_messages');
+add_filter('redirect_post_location', 'newspress_post_redirect_filter', '99');
 add_action('publish_post', 'newspress_send_story');
 add_action('admin_menu', 'newspress_admin_actions');
 add_action('transition_post_status', 'filter_action_publish_scheduled', 10, 3);
