@@ -2,7 +2,7 @@
 Contributors: newstex
 Tags: syndication, newstex
 Requires at least: 3.1.x
-Tested up to: 3.2.1
+Tested up to: 3.3.0
 Stable tag: trunk
 
 Newspress automatically syndicates posts made to your Wordpress blog directly to Newstex without having to worry about RSS feeds.
@@ -43,13 +43,8 @@ Typically it takes a few minutes for Newstex to process a post from Wordpress. I
 
 
 == Changelog ==
-
-= 0.8.1 =
-* Shows a list of recently submitted stories in the Newspress Settings panel
-
 = 0.8 =
-* When a post is published or updated, Newspress shows whether the post was successfully submitted to Newstex
-* There is now a way to validate credentials to make sure they are correct in the Newspress Settings panel
+* Scheduled posts are now read and sent to Newstex
 
 = 0.7.1 =
 * Now sends story language
@@ -67,10 +62,6 @@ Typically it takes a few minutes for Newstex to process a post from Wordpress. I
 * Sends POST requests with story content
 
 == Upgrade Notice ==
-
-= 0.8.1 =
-Version 0.8.1 adds support for confirming delivery of posts and displays a list of successfully submitted stories in the Newspress Settings panel
-
 = 0.7.1 =
 0.7.1 supports tags and categories and sends the post's language
 
