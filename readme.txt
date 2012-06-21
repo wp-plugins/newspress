@@ -1,8 +1,8 @@
-=== Plugin Name ===
+=== Newspress, Newstex Publisher ===
 Contributors: newstex
 Tags: syndication, newstex
 Requires at least: 3.1.x
-Tested up to: 3.3.0
+Tested up to: 3.4
 Stable tag: trunk
 
 Newspress automatically syndicates posts made to your Wordpress blog directly to Newstex without having to worry about RSS feeds.
@@ -43,7 +43,7 @@ Typically it takes a few minutes for Newstex to process a post from Wordpress. I
 
 
 == Changelog ==
-= 0.9.0 =
+= 0.8.0 =
 * Scheduled posts are now also sent to Newstex when they are published
 
 = 0.7.1 =
@@ -62,7 +62,7 @@ Typically it takes a few minutes for Newstex to process a post from Wordpress. I
 * Sends POST requests with story content
 
 == Upgrade Notice ==
-= 0.9.0 =
+= 0.8.0 =
 * Scheduled posts are now also sent to Newstex when they are published
 
 = 0.7.1 =
