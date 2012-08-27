@@ -4,7 +4,7 @@ Plugin Name: Newspress, Newstex Publisher
 Plugin URI: http://www.newstex.com
 Description: Plugin for Publishing posts to Newstex
 Author: Newstex, LLC
-Version: 0.8.0
+Version: 0.9.0
 Author URI: http://www.newstex.com
 */
 
@@ -29,35 +29,17 @@ function newspress_send_story($post_ID) {
 	//Get the post and package it up to be sent
 	$json_data = create_json_blob($post_ID);
 	$url = "http://content.newstex.us/nbsubmit/$post_ID";
+	return wp_remote_post($url, array(
+		'method' => 'PUT',
+		'timeout' => 15,
+		'blocking' => false,
+		'headers' => array(
+			'Authorization' => 'Basic ' . base64_encode(get_option('newspress_user') . ":" . get_option('newspress_key')),
+			'Content-Type' => 'application/json',
+		),
+		'body' => $json_data
 
-	//Generate the PUT request
-	$ch = curl_init($url);
-	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-	//Yes, we want the header returned
-	curl_setopt($ch, CURLOPT_HEADER, 1);
-	//Need to send authentication
-	curl_setopt($ch, CURLOPT_USERPWD, get_option('newspress_user') . ":" . get_option('newspress_key'));
-	curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-	//Declare the encoding we need
-	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-	//put in the data
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-	$curl_response = curl_exec($ch);
-	$status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-	if ($status_code >= 200 and $status_code < 300) {
-		//SUCCESS!
-		$_GET['message'] = 11;
-	} elseif ($status_code == 401) {
-		//Slightly less success
-		$_GET['message'] = 12;
-	}
-	else {
-		//Not sure what happened. Probably should let support know there's a problem.
-		$_GET['message'] = 13;
-	}
-	$_GET['message'] = 11;
+	));
 
 	return $curl_response;
 }
@@ -119,16 +101,8 @@ function create_json_blob($post_ID) {
 //******************* Publish Scheduled Posts Function ******
 function filter_action_publish_scheduled( $new_status, $old_status, $post ) {
 	if( 'publish' == $new_status && 'future' == $old_status ) {
-		newspress_send_story($post->ID);
+		newspress_send_story($post);
 	}
-}
-
-//*************** Redirect post location ********************
-
-function newspress_post_redirect_filter($location) {
-	// http://stackoverflow.com/questions/5007748/modifying-wordpress-post-status-on-publish
-	remove_filter('redirect_post_location', __FILTER__, '99');
-	return add_query_arg('newspress_status', $_GET['message'], $location);
 }
 
 //*************** Message Alteration function ***************
@@ -171,8 +145,6 @@ function newspress_admin_actions() {
 	add_options_page("Newspress Preferences", "Newspress", "manage_options", "Newspress_Preferences", "newspress_admin");
 }
 
-add_filter('post_updated_messages', 'newspress_updated_messages');
-add_filter('redirect_post_location', 'newspress_post_redirect_filter', '99');
 add_action('publish_post', 'newspress_send_story');
 add_action('admin_menu', 'newspress_admin_actions');
 add_action('transition_post_status', 'filter_action_publish_scheduled', 10, 3);

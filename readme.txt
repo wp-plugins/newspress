@@ -43,6 +43,9 @@ Typically it takes a few minutes for Newstex to process a post from Wordpress. I
 
 
 == Changelog ==
+= 0.9.0 =
+Updated to background calls to publish stories, speeding up the publication process. You should no longer experience delays when hitting "Publish" or "Update".
+
 = 0.8.0 =
 * Scheduled posts are now also sent to Newstex when they are published
 
