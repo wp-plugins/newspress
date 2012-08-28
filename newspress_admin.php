@@ -27,26 +27,24 @@
 		<p><?php 
 			$url = "http://content.newstex.us/nbsubmit";
 			//Do a GET request to make sure we have the right server and that our credentials are valid
-			$ch = curl_init($url);
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
-			//Yes, we want the header returned
-			curl_setopt($ch, CURLOPT_HEADER, 1);
-			//Need to send authentication
-			curl_setopt($ch, CURLOPT_USERPWD, get_option('newspress_user') . ":" . get_option('newspress_key'));
-			curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-			$curl_response = curl_exec($ch);
-			$status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-			if ($status_code == 200 ) {
+			$response = wp_remote_get($url,array(
+				'headers' => array(
+					'Authorization' => 'Basic ' . base64_encode(get_option('newspress_user') . ":" . get_option('newspress_key')),
+					'Content-Type' => 'application/json',
+				)
+			));
+			if( is_wp_error($response) ){
+				$status_code = $response['response']['code'];
+				if ($status_code == 401) {
+					//Slightly less success
+					_e("Connection was successful, but credential check failed.</p><p>Please check your username/password and try again");
+				} else {
+					//Not sure what happened. Probably should let support know there's a problem.
+					_e("Something went wrong. The error code is $status_code, please try again, or contact support@newstex.com if problems persist.");
+				}
+			} else {
 				//SUCCESS!
 				_e("Connection test successful, credentials validated.");
-			} elseif ($status_code == 401) {
-				//Slightly less success
-				_e("Connection was successful, but credential check failed.</p><p>Please check your username/password and try again");
-			}
-			else {
-				//Not sure what happened. Probably should let support know there's a problem.
-				_e("Something went wrong. The error code is $status_code, please try again, or contact support@newstex.com if problems persist.");
 			}
 		?></p>
 		</div>
@@ -68,7 +66,6 @@
 	<?php    echo "<h4>" . __( 'Newstex Publisher Settings', 'newspress_trdom' ) . "</h4>"; ?>
 	<p><?php _e("Username: " ); ?><input type="text" name="newspress_user" value="<?php echo $npuser; ?>" size="20"><?php _e(" ex: NEWS" ); ?></p>
 	<p><?php _e("Password: " ); ?><input type="text" name="newspress_key" value="<?php echo $nppwd; ?>" size="20"><?php _e(" ex: " ); ?></p>
-	<p><?php _e("Newstex Post URL: " ); ?><?php _e("http://content.newstex.us"); ?></p>
 
 	<p class="submit">
 	<input type="submit" name="Submit" value="<?php _e('Save and Test Options', 'newspress_trdom' ) ?>" />

@@ -4,7 +4,7 @@ Plugin Name: Newspress, Newstex Publisher
 Plugin URI: http://www.newstex.com
 Description: Plugin for Publishing posts to Newstex
 Author: Newstex, LLC
-Version: 0.9.0
+Version: 0.9.1
 Author URI: http://www.newstex.com
 */
 
@@ -40,8 +40,6 @@ function newspress_send_story($post_ID) {
 		'body' => $json_data
 
 	));
-
-	return $curl_response;
 }
 
 function create_json_blob($post_ID) {
@@ -105,36 +103,6 @@ function filter_action_publish_scheduled( $new_status, $old_status, $post ) {
 	}
 }
 
-//*************** Message Alteration function ***************
-add_filter('post_updated_messages', 'newspress_updated_messages');
-function newspress_updated_messages( $messages ) {
-	#Adds status codes for the possibilities added by newspress (curl failed with >=500 error, a <400, or success)
-	$newspress_success = "\nStory successfully posted by Newspress plugin";
-	$newspress_failure_creds = "\nConnection was successful, but credential check failed.</p><p>Please check your username/password and try again";
-	$newspress_failure_other = "\nSomething went wrong. Update the story to resend. Contact support@newstex.us if problem persists";
-
-	$messages['post'] = array(
-	 0 => '', // Unused. Messages start at index 1.
-	 1 => sprintf( __("Post updated. <a href=\"%s\">View post</a>$messages"), esc_url( get_permalink($post_ID) ) ),
-	 2 => __('Custom field updated.'),
-	 3 => __('Custom field deleted.'),
-	 4 => __('Post updated.'),
-	/* translators: %s: date and time of the revision */
-	 5 => isset($_GET['revision']) ? sprintf( __('Post restored to revision from %s'), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-	 6 => sprintf( __('Post published. <a href="%s">View post</a>'), esc_url( get_permalink($post_ID) ) ),
-	 7 => __('Post saved.'),
-	 8 => sprintf( __('Post submitted. <a target="_blank" href="%s">Preview post</a>'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
-	 9 => sprintf( __('Post scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview post</a>'),
-		// translators: Publish box date format, see http://php.net/date
-		date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ), esc_url( get_permalink($post_ID) ) ),
-	10 => sprintf( __('Post draft updated. <a target="_blank" href="%s">Preview post</a>'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
-	11 => sprintf( __("Post published. <a href=\"%s\">View post</a>$newspress_success"), esc_url( get_permalink($post_ID) ) ),
-	12 => sprintf( __("Post published. <a href=\"%s\">View post</a>$newspress_failure_creds"), esc_url( get_permalink($post_ID) ) ),
-	13 => sprintf( __("Post published. <a href=\"%s\">View post</a>$newspress_failure_other"), esc_url( get_permalink($post_ID) ) ),
-);
-
-return $messages;
-}
 
 //*************** Admin function ***************
 function newspress_admin() {
