@@ -43,6 +43,9 @@ Typically it takes a few minutes for Newstex to process a post from Wordpress. I
 
 
 == Changelog ==
+= 0.9.2 =
+Fixed HTML formatting
+
 = 0.9.1 =
 Fixed message override on post publication, which is no longer needed
 
