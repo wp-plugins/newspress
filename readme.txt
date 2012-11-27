@@ -43,6 +43,9 @@ Typically it takes a few minutes for Newstex to process a post from Wordpress. I
 
 
 == Changelog ==
+= 0.9.3 =
+Switched to using apply_filters to properly format HTML content in posts
+
 = 0.9.2 =
 Fixed HTML formatting
 

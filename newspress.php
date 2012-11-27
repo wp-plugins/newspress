@@ -4,7 +4,7 @@ Plugin Name: Newspress, Newstex Publisher
 Plugin URI: http://www.newstex.com
 Description: Plugin for Publishing posts to Newstex
 Author: Newstex, LLC
-Version: 0.9.2
+Version: 0.9.3
 Author URI: http://www.newstex.com
 */
 
@@ -68,7 +68,7 @@ function create_json_blob($post_ID) {
 	$headline = $post->post_title;
 	//subheadline
 	//content (Actual content in html format)
-	$content = wpautop($post->post_content);
+	$content = apply_filters('the_content', $post->post_content);
 	//excerpt (Usually selected by the user, otherwise seems like the first sentence)
 	$excerpt = $post->post_excerpt;
 	//source (name of the blog)
