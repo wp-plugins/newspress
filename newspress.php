@@ -4,7 +4,7 @@ Plugin Name: Newspress, Newstex Publisher
 Plugin URI: http://www.newstex.com
 Description: Plugin for Publishing posts to Newstex
 Author: Newstex, LLC
-Version: 0.9.3
+Version: 0.9.4
 Author URI: http://www.newstex.com
 */
 

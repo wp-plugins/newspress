@@ -2,7 +2,7 @@
 Contributors: newstex
 Tags: syndication, newstex
 Requires at least: 3.1.x
-Tested up to: 3.4
+Tested up to: 3.5
 Stable tag: trunk
 
 Newspress automatically syndicates posts made to your Wordpress blog directly to Newstex without having to worry about RSS feeds.
@@ -43,6 +43,9 @@ Typically it takes a few minutes for Newstex to process a post from Wordpress. I
 
 
 == Changelog ==
+= 0.9.4 =
+Tested up to version 3.5
+
 = 0.9.3 =
 Switched to using apply_filters to properly format HTML content in posts
 
