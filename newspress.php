@@ -4,7 +4,7 @@ Plugin Name: Newspress, Newstex Publisher
 Plugin URI: http://www.newstex.com
 Description: Plugin for Publishing posts to Newstex
 Author: Newstex, LLC
-Version: 0.9.4
+Version: 0.9.5
 Author URI: http://www.newstex.com
 */
 
@@ -98,7 +98,7 @@ function create_json_blob($post_ID) {
 
 //******************* Publish Scheduled Posts Function ******
 function filter_action_publish_scheduled( $new_status, $old_status, $post ) {
-	if( 'publish' == $new_status && 'future' == $old_status ) {
+	if( 'publish' == $new_status ) {
 		newspress_send_story($post);
 	}
 }
@@ -113,7 +113,7 @@ function newspress_admin_actions() {
 	add_options_page("Newspress Preferences", "Newspress", "manage_options", "Newspress_Preferences", "newspress_admin");
 }
 
-add_action('publish_post', 'newspress_send_story');
+//add_action('publish_post', 'newspress_send_story');
 add_action('admin_menu', 'newspress_admin_actions');
 add_action('transition_post_status', 'filter_action_publish_scheduled', 10, 3);
 

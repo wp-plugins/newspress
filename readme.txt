@@ -43,6 +43,9 @@ Typically it takes a few minutes for Newstex to process a post from Wordpress. I
 
 
 == Changelog ==
+= 0.9.5 =
+Fixed up posting in newer versions of wordpress
+
 = 0.9.4 =
 Tested up to version 3.5
 
