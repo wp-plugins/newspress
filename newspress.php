@@ -4,7 +4,7 @@ Plugin Name: Newspress, Newstex Publisher
 Plugin URI: http://www.newstex.com
 Description: Plugin for Publishing posts to Newstex
 Author: Newstex, LLC
-Version: 0.9.5
+Version: 0.9.6
 Author URI: http://www.newstex.com
 */
 
@@ -25,9 +25,10 @@ Author URI: http://www.newstex.com
  * */
 
 
-function newspress_send_story($post_ID) {
+function newspress_send_story($post) {
+	$post_ID = $post->ID;
 	//Get the post and package it up to be sent
-	$json_data = create_json_blob($post_ID);
+	$json_data = create_json_blob($post);
 	$url = "http://content.newstex.us/nbsubmit/$post_ID";
 	return wp_remote_post($url, array(
 		'method' => 'PUT',
@@ -42,20 +43,18 @@ function newspress_send_story($post_ID) {
 	));
 }
 
-function create_json_blob($post_ID) {
-	//put all the data into an array in order to JSON-ify it
-	$post = get_post($post_ID);
+function create_json_blob($post) {
 	//pull out all the data we need
 	//Create a list of categories
 	//get the categories
-	$category_arr = get_the_category($post_ID);
+	$category_arr = get_the_category($post->ID);
 	$name_arr = array();
 	foreach($category_arr as $cat) {
 		//loop through them and get only their name
 		$name_arr[] = $cat->name;
 	}
 	//get the tags
-	$raw_tag_array = wp_get_post_tags($post_ID);
+	$raw_tag_array = wp_get_post_tags($post->ID);
 	foreach($raw_tag_array as $tag) {
 		//loop through them and get only their name
 		$name_arr[] = $tag->name;
@@ -63,7 +62,7 @@ function create_json_blob($post_ID) {
 	//language
 	$lang = get_bloginfo('language');
 	//permalink
-	$permalink = get_permalink($post_ID);
+	$permalink = get_permalink($post->ID);
 	//headline (Title of the post)
 	$headline = $post->post_title;
 	//subheadline
@@ -86,7 +85,7 @@ function create_json_blob($post_ID) {
 		'post_excerpt' => $excerpt,
 		'post_source' => $source,
 		'post_byline' => $byline,
-		'post_id' => $post_ID,
+		'post_id' => $post->ID,
 		'post_categories' => $name_arr,
 		'post_language' => $lang
 		);

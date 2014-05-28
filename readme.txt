@@ -43,6 +43,9 @@ Typically it takes a few minutes for Newstex to process a post from Wordpress. I
 
 
 == Changelog ==
+= 0.9.6 =
+Bug fixes, Tested with newer versions of wordpress to make sure the POST handler uses the new WP_Post object instead of expecting an ID
+
 = 0.9.5 =
 Fixed up posting in newer versions of wordpress
 
